@@ -1,8 +1,29 @@
-/* eslint no-console:0 */
-// This file is automatically compiled by Webpack, along with any other files
-// present in this directory. You're encouraged to place your actual application logic in
-// a relevant structure within app/javascript and only use these pack files to reference
-// that code so it'll be compiled.
-//
-// To reference this file, add <%= javascript_pack_tag 'application' %> to the appropriate
-// layout file, like app/views/layouts/application.html.erb
+import React from 'react'
+import ReactDOM from 'react-dom'
+import InvestorList from './investorList.js'
+import { ApolloProvider } from 'react-apollo'
+import { ApolloClient } from 'apollo-client'
+import { createHttpLink } from 'apollo-link-http'
+import { InMemoryCache } from 'apollo-cache-inmemory'
+import { Query } from 'react-apollo'
+import gql from 'graphql-tag'
+
+const csrfToken = document.querySelector('meta[name=csrf-token]').getAttribute('content');
+
+const httpLink = createHttpLink({
+  uri: 'http://localhost:3000/graphql',
+  credentials: 'same-origin',
+  headers: { 'X-CSRF-Token': csrfToken }
+})
+
+const client = new ApolloClient({
+  link: httpLink,
+  cache: new InMemoryCache()
+})
+
+ReactDOM.render(
+  <ApolloProvider client={client}>
+    <InvestorList client={client}/>
+  </ApolloProvider>,
+  document.getElementById('root')
+)

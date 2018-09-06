@@ -24,4 +24,13 @@ Types::MutationType = GraphQL::ObjectType.define do
       investor
     }
   end
+
+  field :deleteInvestor, Types::InvestorType do
+    argument :id, !types.ID
+
+    resolve -> (obj, args, ctx) {
+      investor = Investor.find(args[:id])
+      investor.delete
+    }
+  end
 end
